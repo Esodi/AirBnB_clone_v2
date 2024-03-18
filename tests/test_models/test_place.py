@@ -1,8 +1,5 @@
 #!/usr/bin/python3
-
-"""
-Testing for place
-"""
+"""test for place"""
 import unittest
 import os
 from models.place import Place
@@ -12,62 +9,48 @@ from os import getenv
 
 
 class TestPlace(unittest.TestCase):
-    """
-    This will test the place class
-    """
+    """this will test the place class"""
 
     @classmethod
     def setUpClass(cls):
-        """
-        set up for test
-        """
+        """set up for test"""
         cls.place = Place()
         cls.place.city_id = "1234-abcd"
         cls.place.user_id = "4321-dcba"
-        cls.place.name = "Star Wars"
-        cls.place.description = "Luke... I am Your Father"
-        cls.place.number_rooms = 9999999
-        cls.place.number_bathrooms = 2
-        cls.place.max_guest = 494567
-        cls.place.price_by_night = 3
-        cls.place.latitude = 181.0
-        cls.place.longitude = 125.5
-        cls.place.amenity_ids = ["1324-never8t"]
+        cls.place.name = "Death Star"
+        cls.place.description = "UNLIMITED POWER!!!!!"
+        cls.place.number_rooms = 1000000
+        cls.place.number_bathrooms = 1
+        cls.place.max_guest = 607360
+        cls.place.price_by_night = 10
+        cls.place.latitude = 160.0
+        cls.place.longitude = 120.0
+        cls.place.amenity_ids = ["1324-lksdjkl"]
 
     @classmethod
     def teardown(cls):
-        """
-        Tear down at the end of the test
-        """
+        """at the end of the test this will tear it down"""
         del cls.place
 
     def tearDown(self):
-        """
-        teardown
-        """
+        """teardown"""
         try:
             os.remove("file.json")
         except Exception:
             pass
 
     def test_pep8_Place(self):
-        """
-        Tests pep8 style
-        """
+        """Tests pep8 style"""
         style = pep8.StyleGuide(quiet=True)
         p = style.check_files(['models/place.py'])
         self.assertEqual(p.total_errors, 0, "fix pep8")
 
     def test_checking_for_docstring_Place(self):
-        """
-        checking for docstrings
-        """
+        """checking for docstrings"""
         self.assertIsNotNone(Place.__doc__)
 
     def test_attributes_Place(self):
-        """
-        Do amenity have attributes?
-        """
+        """chekcing if amenity have attributes"""
         self.assertTrue('id' in self.place.__dict__)
         self.assertTrue('created_at' in self.place.__dict__)
         self.assertTrue('updated_at' in self.place.__dict__)
@@ -84,15 +67,11 @@ class TestPlace(unittest.TestCase):
         self.assertTrue('amenity_ids' in self.place.__dict__)
 
     def test_is_subclass_Place(self):
-        """
-        Testing if Place is a subclass of Basemodel
-        """
+        """test if Place is subclass of Basemodel"""
         self.assertTrue(issubclass(self.place.__class__, BaseModel), True)
 
     def test_attribute_types_Place(self):
-        """
-        test attribute type for Place
-        """
+        """test attribute type for Place"""
         self.assertEqual(type(self.place.city_id), str)
         self.assertEqual(type(self.place.user_id), str)
         self.assertEqual(type(self.place.name), str)
@@ -108,16 +87,12 @@ class TestPlace(unittest.TestCase):
     @unittest.skipIf(getenv("HBNB_TYPE_STORAGE") == 'db',
                      "can't")
     def test_save_Place(self):
-        """
-        test if the save works
-        """
+        """test if the save works"""
         self.place.save()
         self.assertNotEqual(self.place.created_at, self.place.updated_at)
 
     def test_to_dict_Place(self):
-        """
-        test if the dictionary works
-        """
+        """test if dictionary works"""
         self.assertEqual('to_dict' in dir(self.place), True)
 
 
