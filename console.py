@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 """ Console Module """
 import cmd
+import shlex
 import sys
 from models.base_model import BaseModel
 from models.__init__ import storage
@@ -33,7 +34,7 @@ class HBNBCommand(cmd.Cmd):
     def preloop(self):
         """Prints if isatty is false"""
         if not sys.__stdin__.isatty():
-            print('(hbnb)')
+            print('(hbnb)', end='')
 
     def precmd(self, line):
         """Reformat command line for advanced command syntax.
@@ -73,7 +74,7 @@ class HBNBCommand(cmd.Cmd):
                 pline = pline[2].strip()  # pline is now str
                 if pline:
                     # check for *args or **kwargs
-                    if pline[0] == '{' and pline[-1] =='}'\
+                    if pline[0] == '{' and pline[-1] == '}'\
                             and type(eval(pline)) is dict:
                         _args = pline
                     else:
@@ -115,7 +116,7 @@ class HBNBCommand(cmd.Cmd):
 
     def do_create(self, args):
         """ Create an object of any class"""
-        lst = args.split(" ")
+        lst = shlex.split(args)
         c_name = lst[0]
         if not c_name:
             print("** class name missing **")
@@ -126,25 +127,25 @@ class HBNBCommand(cmd.Cmd):
         new_instance = HBNBCommand.classes[c_name]()
         c_id = str(new_instance.id)
         key = c_name + '.' + c_id
-        storage.save()
         if len(lst) > 1:
             print(new_instance.id)
             new_dict = storage.all()[key]
-            #omitting index 0
             lst = lst[1:]
             for e in lst:
                 elem = e.split('=')
                 k = elem[0].replace('\"', '')
                 v = elem[1].replace('\"', '')
+                if k in HBNBCommand.types:
+                    v = HBNBCommand.types[k](v)
                 if '_' in k:
                     k = k.replace('_', ' ')
-                if '_' in v:
-                    v = v.replace('_', ' ')
-                new_dict.__dict__.update({k: v})
-            new_dict.save()
+                if isinstance(v, str):
+                    if '_' in v:
+                        v = v.replace('_', ' ')
+                setattr(new_instance, k, v)
+            new_instance.save()
         else:
             print(new_instance.id)
-        storage.save()
 
     def help_create(self):
         """ Help information for the create method """
@@ -207,7 +208,7 @@ class HBNBCommand(cmd.Cmd):
         key = c_name + "." + c_id
 
         try:
-            del(storage.all()[key])
+            del (storage.all()[key])
             storage.save()
         except KeyError:
             print("** no instance found **")
@@ -339,6 +340,7 @@ class HBNBCommand(cmd.Cmd):
         """ Help information for the update class """
         print("Updates an object with new information")
         print("Usage: update <className> <id> <attName> <attVal>\n")
+
 
 if __name__ == "__main__":
     HBNBCommand().cmdloop()
