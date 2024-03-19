@@ -1,72 +1,46 @@
-#!/usr/bin/python3
-"""test for BaseModel"""
 import unittest
-import os
+# from datetime import datetime
 from models.base_model import BaseModel
-import pep8
-from os import getenv
 
 
 class TestBaseModel(unittest.TestCase):
-    """this will test the base model class"""
+    def setUp(self):
+        self.BaseModel = BaseModel()
 
-    @classmethod
-    def setUpClass(cls):
-        """setup for the test"""
-        cls.base = BaseModel()
-        cls.base.name = "Kev"
-        cls.base.num = 20
+    def test_attributes_existence(self):
+        self.assertTrue(hasattr(self.BaseModel, 'id'))
+        self.assertTrue(hasattr(self.BaseModel, 'created_at'))
+        self.assertTrue(hasattr(self.BaseModel, 'updated_at'))
 
-    @classmethod
-    def teardown(cls):
-        """at the end of the test this will tear it down"""
-        del cls.base
+    def test_str_representation(self):
+        expected_str = "[BaseModel] ({}) {}".format(self.BaseModel.id, self.BaseModel.__dict__)
+        self.assertEqual(str(self.BaseModel), expected_str)
 
-    def tearDown(self):
-        """teardown"""
-        try:
-            os.remove("file.json")
-        except Exception:
-            pass
+    def test_save_updates_updated_at(self):
+        original_updated_at = self.BaseModel.updated_at
+        self.BaseModel.save()
+        new_updated_at = self.BaseModel.updated_at
+        self.assertNotEqual(original_updated_at, new_updated_at)
 
-    def test_pep8_BaseModel(self):
-        """Testing for pep8"""
-        style = pep8.StyleGuide(quiet=True)
-        p = style.check_files(['models/base_model.py'])
-        self.assertEqual(p.total_errors, 0, "fix pep8")
+    def test_to_dict_structure(self):
+        expected_keys = ['id', 'created_at', 'updated_at', '__class__']
+        BaseModel_dict = self.BaseModel.to_dict()
+        self.assertCountEqual(BaseModel_dict.keys(), expected_keys)
 
-    def test_checking_for_docstring_BaseModel(self):
-        """checking for docstrings"""
-        self.assertIsNotNone(BaseModel.__doc__)
-        self.assertIsNotNone(BaseModel.__init__.__doc__)
-        self.assertIsNotNone(BaseModel.__str__.__doc__)
-        self.assertIsNotNone(BaseModel.save.__doc__)
-        self.assertIsNotNone(BaseModel.to_dict.__doc__)
+    def test_to_dict_values(self):
+        BaseModel_dict = self.BaseModel.to_dict()
+        self.assertEqual(BaseModel_dict['id'], self.BaseModel.id)
+        self.assertEqual(BaseModel_dict['created_at'], self.BaseModel.created_at.isoformat())
+        self.assertEqual(BaseModel_dict['updated_at'], self.BaseModel.updated_at.isoformat())
+        self.assertEqual(BaseModel_dict['__class__'], 'BaseModel')
 
-    def test_method_BaseModel(self):
-        """chekcing if Basemodel have methods"""
-        self.assertTrue(hasattr(BaseModel, "__init__"))
-        self.assertTrue(hasattr(BaseModel, "save"))
-        self.assertTrue(hasattr(BaseModel, "to_dict"))
-
-    def test_init_BaseModel(self):
-        """test if the base is an type BaseModel"""
-        self.assertTrue(isinstance(self.base, BaseModel))
-
-    @unittest.skipIf(getenv("HBNB_TYPE_STORAGE") == 'db',
-                     "can't")
-    def test_save_BaesModel(self):
-        """test if the save works"""
-        self.base.save()
-        self.assertNotEqual(self.base.created_at, self.base.updated_at)
-
-    def test_to_dict_BaseModel(self):
-        """test if dictionary works"""
-        base_dict = self.base.to_dict()
-        self.assertEqual(self.base.__class__.__name__, 'BaseModel')
-        self.assertIsInstance(base_dict['created_at'], str)
-        self.assertIsInstance(base_dict['updated_at'], str)
+    def test_from_dict(self):
+        BaseModel_dict = self.BaseModel.to_dict()
+        new_model = BaseModel(**BaseModel_dict)
+        self.assertEqual(new_model.id, self.BaseModel.id)
+        self.assertEqual(new_model.created_at, self.BaseModel.created_at)
+        self.assertEqual(new_model.updated_at, self.BaseModel.updated_at)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()
