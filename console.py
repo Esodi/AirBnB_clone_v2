@@ -128,6 +128,7 @@ class HBNBCommand(cmd.Cmd):
         key = c_name + '.' + c_id
         storage.save()
         if len(lst) > 1:
+            print(new_instance.id)
             new_dict = storage.all()[key]
             #omitting index 0
             lst = lst[1:]
