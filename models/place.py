@@ -1,9 +1,18 @@
 #!/usr/bin/python3
 """ Place Module for HBNB project """
 from models.base_model import BaseModel, Base
-from sqlalchemy import Column, String, Integer, ForeignKey, Float
+from sqlalchemy import Column, String, Integer, ForeignKey, Float, Table
 from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import relationship
+from os import getenv
+import models
 
+
+place_amenity = Table('place_amenity', Base.metadata,
+                      Column('place_id', String(60), ForeignKey(places.id), nullable=False),
+                      Column('amenity_id', String(60), ForeignKey(amenities.id), nullable=False),
+                      PrimaryKeyConstraint('place_id', 'amenity_id')
+                      )
 
 class Place(BaseModel, Base):
     """ A place to stay """
@@ -19,3 +28,17 @@ class Place(BaseModel, Base):
     latitude = Column(Float, nullable=True)
     longitude = Column(Float)
     amenity_ids = []
+    if getenv("HBNB_TYPE_STORAGE") == "db":
+        amenities = relationship('Amenity', secondary=place_amenity, back_populates=places, viewonly=False)
+    else:
+        @property
+        def amenities(self):
+            """amenities getter method"""
+            return self.amenity_ids
+
+        @amenities.setter
+        def amenities(self, obj=None):
+            """amenities setter method"""
+            if type(obj) is Amenity and obj.id not in self.amenity_ids:
+                self.amenity_ids.append(obj.id)
+
