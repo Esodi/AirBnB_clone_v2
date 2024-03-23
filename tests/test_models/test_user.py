@@ -14,7 +14,7 @@ from time import sleep
 from models.user import User
 
 
-class TestUser_instantiation(unittest.TestCase):
+class TestUserInstantiation(unittest.TestCase):
     """Unittests for testing instantiation of the User class."""
 
     def test_no_args_instantiates(self):
@@ -90,11 +90,11 @@ class TestUser_instantiation(unittest.TestCase):
             User(id=None, created_at=None, updated_at=None)
 
 
-class TestUser_save(unittest.TestCase):
+class TestUserSave(unittest.TestCase):
     """Unittests for testing save method of the  class."""
 
     @classmethod
-    def setUp(self):
+    def setUpClass(cls):
         try:
             os.rename("file.json", "tmp")
         except IOError:
@@ -141,7 +141,7 @@ class TestUser_save(unittest.TestCase):
             self.assertIn(usid, f.read())
 
 
-class TestUser_to_dict(unittest.TestCase):
+class TestUserToDict(unittest.TestCase):
     """Unittests for testing to_dict method of the User class."""
 
     def test_to_dict_type(self):
