@@ -41,8 +41,12 @@ class DBStorage:
         metadata.reflect(bind=self.__engine)
         db_dict = metadata.tables
 
-        if cls != "":
-            objs = self.__session.query(models.classes[cls]).all()
+        #if cls != "":
+        if cls:
+            if isinstance(cls, str):
+                cls = eval(cls)
+            #objs = self.__session.query(models.classes[cls]).all()
+            objs = self.__session.query(cls)
             for obj in objs:
                 key = "{}.{}".format(obj.__class__.__name__, obj.id)
                 db_dict[key] = obj
