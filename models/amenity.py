@@ -4,9 +4,10 @@ from models.base_model import BaseModel, Base
 from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
-from models.place import Place
+from models.place import place_amenity
 
 class Amenity(BaseModel, Base):
+    """the class called amenities"""
     __tablename__ = 'amenities'
     name = Column(String(128), nullable=False)
     place_amenities = relationship('Place', secondary=place_amenity, back_populates='places')
