@@ -39,28 +39,18 @@ class DBStorage:
         '''
             Query current database session
         '''
-        #db_dict = {}
-        metadata = MetaData()
-        metadata.reflect(bind=self.__engine)
-        db_dict = metadata.tables
+        db_dict = {}
 
-        #if cls != "":
-        if cls:
-            if isinstance(cls, str):
-                cls = eval(cls)
-            #objs = self.__session.query(models.classes[cls]).all()
-            objs = self.__session.query(cls)
+        if cls != "":
+            objs = self.__session.query(models.classes[cls]).all()
             for obj in objs:
                 key = "{}.{}".format(obj.__class__.__name__, obj.id)
                 db_dict[key] = obj
             return db_dict
         else:
-            #for key, value in models.classes.items():
-            lst = [State, City, User, Place, Review, Amenity]
-            for key in lst:
+            for key, value in models.classes.items():
                 if key != "BaseModel":
-                    #objs = self.__session.query(value).all()
-                    objs = self.__session.query(key).all()
+                    objs = self.__session.query(value).all()
                     if len(objs) > 0:
                         for obj in objs:
                             key = "{}.{}".format(obj.__class__.__name__,
