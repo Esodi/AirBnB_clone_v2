@@ -5,7 +5,7 @@
 from os import getenv
 from sqlalchemy import create_engine, MetaData
 from sqlalchemy.orm import sessionmaker, scoped_session
-import models
+import models.* import *
 from models.state import State
 from models.city import City
 from models.base_model import Base
