@@ -21,18 +21,6 @@ place_amenity = Table("place_amenity", Base.metadata,
 
 class Place(BaseModel, Base):
     """This is the class for Place
-    Attributes:
-        city_id: city id
-        user_id: user id
-        name: name input
-        description: string of description
-        number_rooms: number of room in int
-        number_bathrooms: number of bathrooms in int
-        max_guest: maximum guest in int
-        price_by_night:: pice for a staying in int
-        latitude: latitude in flaot
-        longitude: longitude in float
-        amenity_ids: list of Amenity ids
     """
     __tablename__ = "places"
     city_id = Column(String(60), ForeignKey("cities.id"), nullable=False)
@@ -58,18 +46,18 @@ class Place(BaseModel, Base):
         @property
         def reviews(self):
             """ Returns list of reviews.id """
-            var = models.storage.all()
-            lista = []
-            result = []
-            for key in var:
+            att = models.storage.all()
+            np = []
+            output = []
+            for key in att:
                 review = key.replace('.', ' ')
                 review = shlex.split(review)
                 if (review[0] == 'Review'):
-                    lista.append(var[key])
-            for elem in lista:
-                if (elem.place_id == self.id):
-                    result.append(elem)
-            return (result)
+                    np.append(var[key])
+            for i in np:
+                if (i.place_id == self.id):
+                    output.append(i)
+            return output
 
         @property
         def amenities(self):
