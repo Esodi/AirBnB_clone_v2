@@ -36,7 +36,10 @@ class DBStorage:
         '''
             Query current database session
         '''
-        db_dict = {}
+        #db_dict = {}
+        metadata = MetaData()
+        metadata.reflect(bind=self.__engine)
+        db_dict = metadata.tables
 
         if cls != "":
             objs = self.__session.query(models.classes[cls]).all()
