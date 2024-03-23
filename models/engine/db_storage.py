@@ -5,10 +5,13 @@
 from os import getenv
 from sqlalchemy import create_engine, MetaData
 from sqlalchemy.orm import sessionmaker, scoped_session
-import models
+from models.base_model import Base
 from models.state import State
 from models.city import City
-from models.base_model import Base, BaseModel
+from models.user import User
+from models.place import Place
+from models.review import Review
+from models.amenity import Amenity
 
 
 class DBStorage:
@@ -52,9 +55,12 @@ class DBStorage:
                 db_dict[key] = obj
             return db_dict
         else:
-            for key, value in models.classes.items():
+            #for key, value in models.classes.items():
+            lst = [State, City, User, Place, Review, Amenity]
+            for key in lst:
                 if key != "BaseModel":
-                    objs = self.__session.query(value).all()
+                    #objs = self.__session.query(value).all()
+                    objs = self.__session.query(key).all()
                     if len(objs) > 0:
                         for obj in objs:
                             key = "{}.{}".format(obj.__class__.__name__,
