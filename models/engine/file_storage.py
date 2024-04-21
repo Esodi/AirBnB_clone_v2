@@ -10,6 +10,7 @@ class FileStorage:
 
     def all(self, cls=None):
         """Returns a dictionary of models currently in storage"""
+        from models.city import City
         if cls is not None:
             if type(cls) is str:
                 cls = eval(cls)
@@ -66,3 +67,7 @@ class FileStorage:
             if key in self.__objects:
                 del self.__objects[key]
                 self.save()
+
+    def close(self):
+        """ deserializing the JSON file to objects """
+        self.reload()

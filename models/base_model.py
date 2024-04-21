@@ -72,13 +72,23 @@ class BaseModel:
         '''
             Return dictionary representation of BaseModel class.
         '''
+        s_dict = {}
         cp_dct = dict(self.__dict__)
         cp_dct['__class__'] = str(self.__class__.__name__)
         cp_dct['updated_at'] = self.updated_at.strftime("%Y-%m-%dT%H:%M:%S.%f")
         cp_dct['created_at'] = self.created_at.strftime("%Y-%m-%dT%H:%M:%S.%f")
-        if hasattr(self, "_sa_instance_state"):
-            del cp_dct["_sa_instance_state"]
-        return (cp_dct)
+        for k, v in cp_dct.items():
+            if k != '_sa_instance_state':
+                s_dict[k] = v
+        #if hasattr(self, "_sa_instance_state"):
+        #print("=============================")
+        #print(s_dict)
+        #print("=============================")
+        #del cp_dct["_sa_instance_state"]
+        #print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
+        #print(cp_dct["_sa_instance_state"])
+        #print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
+        return (s_dict)
 
     def delete(self):
         '''
